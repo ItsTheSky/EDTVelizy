@@ -24,9 +24,17 @@
                   Classes="Success" Theme="{DynamicResource OutlineButton}"
                   Content="{markupExtensions:SymbolIcon Symbol=ArrowLeft}" Command="{Binding PreviousDayCommand}"/>
           
-          <Button Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  Classes="Warning" Theme="{DynamicResource OutlineButton}"
-                  Content="Aujourd'hui" Command="{Binding GoToTodayCommand}"/>
+          <avalonia:SpacedGrid Grid.Row="3" Grid.Column="1" 
+                               ColumnDefinitions="Auto,*" ColumnSpacing="5">
+              <Button Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Height="40" Width="40" Padding="0"
+                      Classes="Primary" Theme="{DynamicResource OutlineButton}"
+                      Content="{markupExtensions:SymbolIcon Symbol=Settings}" Command="{Binding OpenSettingsCommand}"/>
+              
+              <Button Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Classes="Warning" Theme="{DynamicResource OutlineButton}"
+                      Content="{markupExtensions:SymbolIcon Symbol=Home}" Command="{Binding GoToTodayCommand}"/>
+          </avalonia:SpacedGrid>
           
           <Button Grid.Column="2" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                   Classes="Success" Theme="{DynamicResource OutlineButton}"
@@ -62,6 +70,7 @@
                       SelectedDate="{Binding DatePickerDate, Converter={StaticResource DateOnlyToDateTimeConverter}}"/>
           
       </avalonia:SpacedGrid>
+      
       <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
               IsVisible="{Binding ShowingCourse, Converter={x:Static ObjectConverters.IsNotNull}}"
               Background="#971E1E1E">
@@ -76,6 +85,7 @@
               </StackPanel>
           </Border>
       </Border>
+      
       <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
               IsVisible="{Binding IsLoading}"
               Background="#971E1E1E">
@@ -85,6 +95,16 @@
               IsIndeterminate="True"
               Theme="{DynamicResource ProgressRing}"
               ShowProgressText="False"/>
+      </Border>
+      
+      <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+              IsVisible="{Binding SettingsOpened}"
+              Background="#971E1E1E">
+            <Border Classes="Shadow" Theme="{StaticResource CardBorder}"
+                    MinWidth="300" MinHeight="200"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <controls:SettingsPage x:Name="Settings" />
+            </Border>
       </Border>
   </Grid>
 </UserControl>

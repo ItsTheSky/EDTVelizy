@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Dialogs;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -22,6 +23,7 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<DailyScheduleControl.ScheduleItem> _items = [];
     [ObservableProperty] private Dictionary<DateOnly, List<InternalCourse>> _loadedCoursesCache = new();
     [ObservableProperty] private bool _isLoading = false;
+    [ObservableProperty] private bool _settingsOpened = false;
     
     public ObservableCollection<DayOfTheWeek> DaysOfWeek { get; } =
     [
@@ -130,11 +132,21 @@ public partial class MainViewModel : ViewModelBase
                 StartDate = startOfWeek,
                 EndDate = endOfWeek,
                 ColourScheme = "3",
-                ViewType = CalendarRequest.CalendarViewType.AgendaWeek
+                ViewType = CalendarRequest.CalendarViewType.AgendaWeek,
+                FederationId = Settings.Group
             };
 
             courses = [];
             var loadedCourses = await Endpoints.GetCourses(req);
+            if (loadedCourses.Count == 0)
+            {
+                NotificationManager.Show(
+                    new Notification("Faute de frappe?", 
+                        "Aucun cours n'a été trouvé pour cette semaine. Vérifiez que le groupe est correctement configuré."),
+                    type: NotificationType.Warning,
+                    classes: ["Light"]);
+            }
+            
             var sortedCourses = new Dictionary<DateOnly, List<InternalCourse>>();
             foreach (var course in loadedCourses)
             {
@@ -199,6 +211,13 @@ public partial class MainViewModel : ViewModelBase
     {
         ShowingCourse = null;
     }
+    
+    [RelayCommand]
+    public void OpenSettings()
+    {
+        MainView.Instance.Settings.LoadSettings();
+        SettingsOpened = true;
+    }
 
     #endregion
 
@@ -225,4 +244,16 @@ public partial class MainViewModel : ViewModelBase
         public string StartTime => Course.Start.ToString("HH:mm");
         public string EndTime => Course.End.ToString("HH:mm");
     }
+    
+    public static SettingsViewModel.SettingsModel Settings
+    {
+        get
+        {
+            MainView.Instance.Settings.LoadSettings();
+            
+            return MainView.Instance.Settings.ViewModel.Settings;
+        }
+    }
+    
+    public static WindowNotificationManager NotificationManager => MainView.Instance.NotificationManager!;
 }

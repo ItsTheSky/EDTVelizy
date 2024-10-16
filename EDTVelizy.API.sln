@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDTVelizy.API", "EDTVelizy.API\EDTVelizy.API.csproj", "{90CAA6B3-083B-4207-B5CA-A1C2E0605B06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDTVelizy.Demo", "EDTVelizy.Demo\EDTVelizy.Demo.csproj", "{F45F8FB9-CD09-42C3-AFE5-CE2A9D777585}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDTVelizy.Viewer", "EDTVelizy.Viewer\EDTVelizy.Viewer\EDTVelizy.Viewer.csproj", "{741120C3-B7C6-45F7-8273-1FE0C8C7E423}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDTVelizy.Viewer.Android", "EDTVelizy.Viewer\EDTVelizy.Viewer.Android\EDTVelizy.Viewer.Android.csproj", "{CE6B3DE3-4360-4D18-95FD-4614FB12D07B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDTVelizy.Viewer.Desktop", "EDTVelizy.Viewer\EDTVelizy.Viewer.Desktop\EDTVelizy.Viewer.Desktop.csproj", "{491C06D9-6862-4725-99AC-6743910B117A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDTVelizy.Viewer.iOS", "EDTVelizy.Viewer\EDTVelizy.Viewer.iOS\EDTVelizy.Viewer.iOS.csproj", "{AC4B4E55-96CD-4732-A3A9-16460A457E94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDTVelizy.Viewer.Browser", "EDTVelizy.Viewer\EDTVelizy.Viewer.Browser\EDTVelizy.Viewer.Browser.csproj", "{8CF44A7C-3ECF-44CE-9887-523379204F1B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90CAA6B3-083B-4207-B5CA-A1C2E0605B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90CAA6B3-083B-4207-B5CA-A1C2E0605B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90CAA6B3-083B-4207-B5CA-A1C2E0605B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90CAA6B3-083B-4207-B5CA-A1C2E0605B06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F45F8FB9-CD09-42C3-AFE5-CE2A9D777585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F45F8FB9-CD09-42C3-AFE5-CE2A9D777585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F45F8FB9-CD09-42C3-AFE5-CE2A9D777585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F45F8FB9-CD09-42C3-AFE5-CE2A9D777585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{741120C3-B7C6-45F7-8273-1FE0C8C7E423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{741120C3-B7C6-45F7-8273-1FE0C8C7E423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{741120C3-B7C6-45F7-8273-1FE0C8C7E423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{741120C3-B7C6-45F7-8273-1FE0C8C7E423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE6B3DE3-4360-4D18-95FD-4614FB12D07B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE6B3DE3-4360-4D18-95FD-4614FB12D07B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE6B3DE3-4360-4D18-95FD-4614FB12D07B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE6B3DE3-4360-4D18-95FD-4614FB12D07B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{491C06D9-6862-4725-99AC-6743910B117A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{491C06D9-6862-4725-99AC-6743910B117A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{491C06D9-6862-4725-99AC-6743910B117A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{491C06D9-6862-4725-99AC-6743910B117A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC4B4E55-96CD-4732-A3A9-16460A457E94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC4B4E55-96CD-4732-A3A9-16460A457E94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC4B4E55-96CD-4732-A3A9-16460A457E94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC4B4E55-96CD-4732-A3A9-16460A457E94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CF44A7C-3ECF-44CE-9887-523379204F1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF44A7C-3ECF-44CE-9887-523379204F1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF44A7C-3ECF-44CE-9887-523379204F1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF44A7C-3ECF-44CE-9887-523379204F1B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:EDTVelizy.Viewer.ViewModels"
+             xmlns:avalonia="clr-namespace:SpacedGridControl.Avalonia;assembly=SpacedGridControl.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="EDTVelizy.Viewer.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+  <avalonia:SpacedGrid RowDefinitions="Auto,*,Auto"
+                       RowSpacing="10" Margin="10">
+      
+      <Button Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+              Content="Refresh" Command="{Binding ReloadCoursesCommand}"/>
+      
+      <DataGrid Grid.Row="1" ItemsSource="{Binding LoadedCourses}">
+          <DataGrid.Columns>
+              <DataGridTextColumn IsReadOnly="True" Header="Matière" Binding="{Binding Description.Subject}"/>
+              <DataGridTextColumn IsReadOnly="True" Header="Salle" Binding="{Binding Description.Room}"/>
+              <DataGridTemplateColumn IsReadOnly="True" Header="Type de cours">
+                  <!-- custom cell background color -->
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding Description.EventType, Converter={StaticResource CourseTypeToColorConverter}}"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           TextAlignment="Center"
+                                           Text="{Binding Description.EventType}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+              <DataGridTextColumn IsReadOnly="True" Header="Heure de début" Binding="{Binding StartTime}"/>
+              <DataGridTextColumn IsReadOnly="True" Header="Heure de fin" Binding="{Binding EndTime}"/>
+          </DataGrid.Columns>
+      </DataGrid>
+      
+  </avalonia:SpacedGrid>
+</UserControl>

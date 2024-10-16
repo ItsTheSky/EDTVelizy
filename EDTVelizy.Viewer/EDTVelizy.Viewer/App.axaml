@@ -1,0 +1,22 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:EDTVelizy.Viewer"
+             xmlns:converters="clr-namespace:EDTVelizy.Viewer.Converters"
+             xmlns:semi="https://irihi.tech/semi"
+             x:Class="EDTVelizy.Viewer.App"
+             RequestedThemeVariant="Dark">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+             
+    <Application.Resources>
+        <converters:CourseTypeToColorConverter x:Key="CourseTypeToColorConverter"/>
+    </Application.Resources>
+
+    <Application.Styles>
+        <semi:SemiTheme Locale="en-US" />
+        <StyleInclude Source="avares://Semi.Avalonia.DataGrid/Index.axaml" />
+    </Application.Styles>
+</Application>

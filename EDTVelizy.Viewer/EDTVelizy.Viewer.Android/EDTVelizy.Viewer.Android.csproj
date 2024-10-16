@@ -9,6 +9,7 @@
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <AndroidPackageFormat>apk</AndroidPackageFormat>
         <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+        <AndroidSdkDirectory>C:\Users\liveg\AppData\Local\Android\Sdk</AndroidSdkDirectory>
     </PropertyGroup>
 
     <ItemGroup>

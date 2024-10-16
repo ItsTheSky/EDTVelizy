@@ -7,7 +7,7 @@ using Avalonia.ReactiveUI;
 namespace EDTVelizy.Viewer.Android;
 
 [Activity(
-    Label = "EDTVelizy.Viewer.Android",
+    Label = "EDT Vélizy",
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,

@@ -34,7 +34,6 @@ public static class JsonUtils
     public static Dictionary<string, string> ToDictionary(object obj)
     {
         var json = Serialize(obj);
-        Console.WriteLine(json);
         
         var parameters = new Dictionary<string, string>();
         foreach (var property in JsonSerializer.Deserialize<JsonElement>(json, Options).EnumerateObject())

@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:EDTVelizy.Viewer.ViewModels"
              xmlns:avalonia="clr-namespace:SpacedGridControl.Avalonia;assembly=SpacedGridControl.Avalonia"
+             xmlns:controls="clr-namespace:EDTVelizy.Viewer.Controls"
+             xmlns:markupExtensions="clr-namespace:FluentIcons.Avalonia.MarkupExtensions;assembly=FluentIcons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EDTVelizy.Viewer.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -13,33 +15,76 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <avalonia:SpacedGrid RowDefinitions="Auto,*,Auto"
-                       RowSpacing="10" Margin="10">
-      
-      <Button Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-              Content="Refresh" Command="{Binding ReloadCoursesCommand}"/>
-      
-      <DataGrid Grid.Row="1" ItemsSource="{Binding LoadedCourses}">
-          <DataGrid.Columns>
-              <DataGridTextColumn IsReadOnly="True" Header="Matière" Binding="{Binding Description.Subject}"/>
-              <DataGridTextColumn IsReadOnly="True" Header="Salle" Binding="{Binding Description.Room}"/>
-              <DataGridTemplateColumn IsReadOnly="True" Header="Type de cours">
-                  <!-- custom cell background color -->
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Border Background="{Binding Description.EventType, Converter={StaticResource CourseTypeToColorConverter}}"
-                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           TextAlignment="Center"
-                                           Text="{Binding Description.EventType}"/>
-                            </Border>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-              <DataGridTextColumn IsReadOnly="True" Header="Heure de début" Binding="{Binding StartTime}"/>
-              <DataGridTextColumn IsReadOnly="True" Header="Heure de fin" Binding="{Binding EndTime}"/>
-          </DataGrid.Columns>
-      </DataGrid>
-      
-  </avalonia:SpacedGrid>
+  <Grid>
+      <avalonia:SpacedGrid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="10"
+                       ColumnDefinitions="*,*,*" ColumnSpacing="5"
+                       Margin="10">
+          
+          <Button Grid.Column="0" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  Classes="Success" Theme="{DynamicResource OutlineButton}"
+                  Content="{markupExtensions:SymbolIcon Symbol=ArrowLeft}" Command="{Binding PreviousDayCommand}"/>
+          
+          <Button Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  Classes="Warning" Theme="{DynamicResource OutlineButton}"
+                  Content="Aujourd'hui" Command="{Binding GoToTodayCommand}"/>
+          
+          <Button Grid.Column="2" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  Classes="Success" Theme="{DynamicResource OutlineButton}"
+                  Content="{markupExtensions:SymbolIcon Symbol=ArrowRight}" Command="{Binding NextDayCommand}"/>
+          
+          <!-- On the second line, we'll show all 7 days of the week (L, M, M J, V, S, D) -->
+          <avalonia:SpacedGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+              <ItemsControl ItemsSource="{Binding DaysOfWeek}" HorizontalAlignment="Center">
+                  <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                           <Button Theme="{Binding Day, Converter={StaticResource DayOfWeekToButtonClassConverter}}"
+                                   Classes.Secondary="{Binding !IsWeekend}"
+                                   Classes.Tertiary="{Binding IsWeekend}"
+                                   Command="{Binding SelectDay}"
+                                   Content="{Binding Letter}" Padding="5" Width="30" Height="30" />
+                      </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                  <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                          <StackPanel Orientation="Horizontal" Spacing="5"/>
+                        </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+              </ItemsControl>
+          </avalonia:SpacedGrid>
+          
+          <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+              <controls:DailyScheduleControl x:Name="ScheduleControl" 
+                                             Items="{Binding Items}"/>
+          </ScrollViewer>
+          
+          <DatePicker Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
+                      HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                      SelectedDate="{Binding DatePickerDate, Converter={StaticResource DateOnlyToDateTimeConverter}}"/>
+          
+      </avalonia:SpacedGrid>
+      <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+              IsVisible="{Binding ShowingCourse, Converter={x:Static ObjectConverters.IsNotNull}}"
+              Background="#971E1E1E">
+          <Border Classes="Shadow" Theme="{StaticResource CardBorder}"
+                  HorizontalAlignment="Center" VerticalAlignment="Center">
+              <StackPanel Orientation="Vertical" Spacing="3">
+                  <controls:CourseCard x:Name="CourseCardControl" />
+                  <Separator />
+                  <Button HorizontalAlignment="Stretch" 
+                          Theme="{StaticResource OutlineButton}" Classes="Danger" 
+                          Content="Fermer" Command="{Binding CloseCourseCommand}" />
+              </StackPanel>
+          </Border>
+      </Border>
+      <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+              IsVisible="{Binding IsLoading}"
+              Background="#971E1E1E">
+          <ProgressBar
+              Width="100"
+              Height="100"
+              IsIndeterminate="True"
+              Theme="{DynamicResource ProgressRing}"
+              ShowProgressText="False"/>
+      </Border>
+  </Grid>
 </UserControl>

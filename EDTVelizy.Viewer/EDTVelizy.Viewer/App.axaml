@@ -13,6 +13,9 @@
              
     <Application.Resources>
         <converters:CourseTypeToColorConverter x:Key="CourseTypeToColorConverter"/>
+        <converters:DayOfWeekToButtonClassConverter x:Key="DayOfWeekToButtonClassConverter" />
+        <converters:StringLimiterConverter x:Key="StringLimiterConverter" />
+        <converters:DateOnlyToDateTimeConverter x:Key="DateOnlyToDateTimeConverter" />
     </Application.Resources>
 
     <Application.Styles>

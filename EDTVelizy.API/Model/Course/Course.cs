@@ -3,32 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace EDTVelizy.API;
 
-/*
- *     {
-        "id": "-746998998:-2064558780:7:15220:7",
-        "start": "2024-10-17T13:00:00",
-        "end": "2024-10-17T16:00:00",
-        "allDay": false,
-        "description": "CUKALLA Etleva<br />OSTER Alain\r\n\r\n<br />\r\n\r\nINF1-B\r\n\r\n<br />\r\n\r\n313 - VEL\r\n\r\n<br />\r\n\r\nR1.06 - Mathematiques discretes<br />R1.10 - Anglais\r\n",
-        "backgroundColor": "#8000FF",
-        "textColor": "#ffffff",
-        "department": "INFO",
-        "faculty": "IUT de Vélizy",
-        "eventCategory": "Travaux Pratiques (TP)",
-        "sites": [
-            "Bat. MERMOZ - VEL"
-        ],
-        "modules": [
-            "IN1R06",
-            "IN1R10"
-        ],
-        "registerStatus": 0,
-        "studentMark": 0,
-        "custom1": null,
-        "custom2": null,
-        "custom3": null
-    },
- */
 [Serializable]
 public class Course
 {

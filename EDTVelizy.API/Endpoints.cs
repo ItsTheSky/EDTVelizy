@@ -58,4 +58,17 @@ public static class Endpoints
         return description;
     }
     
+    public static async Task<List<string>> GetGroups(FederationRequest request)
+    {
+        var response = await RequestUtils.PostAsync("ReadResourceListItems", request);
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
+        var json = JsonDocument.Parse(content);
+        var results = json.RootElement.GetProperty("results");
+        var groups = new List<string>();
+        foreach (var group in results.EnumerateArray())
+            groups.Add(group.GetProperty("text").GetString());
+        return groups;
+    }
+    
 }

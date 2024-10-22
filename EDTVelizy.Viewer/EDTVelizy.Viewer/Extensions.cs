@@ -17,4 +17,15 @@ public static class Extensions
         return brush;
     }
     
+    public static Color ToAvaloniaColor(this System.Drawing.Color color)
+    {
+        return Color.FromArgb(color.A, color.R, color.G, color.B);
+    }
+    
+    public static string Limit(this string str, int maxLength)
+    {
+        if (str.Length <= maxLength)
+            return str;
+        return str[..(maxLength - 3)] + "...";
+    }
 }

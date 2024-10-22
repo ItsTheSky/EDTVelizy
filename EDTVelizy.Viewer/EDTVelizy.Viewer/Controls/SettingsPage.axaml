@@ -14,7 +14,7 @@
         
             <ScrollViewer Grid.Row="1">
                 <avalonia:SpacedGrid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="2"
-                                 RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
+                                 RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="5">
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Groupe" HorizontalAlignment="Left" />
                 
                 <AutoCompleteBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"
@@ -70,6 +70,36 @@
                         Padding="0" Width="30" Height="30" Margin="2"
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Command="{Binding HelpPressedCommand}" CommandParameter="2"
+                        Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
+                
+                <!-- 
+                    #############################################################################
+                -->
+
+                <TextBlock Grid.Row="3" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Mode d'Affichage" HorizontalAlignment="Left" />
+                <ToggleSwitch Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                              OnContent="Timeline" OffContent="Liste"
+                              IsChecked="{Binding Settings.DisplayMode}"/>
+                
+                <Button Grid.Row="3" Grid.Column="3" Theme="{StaticResource OutlineButton}" Classes="Tertiary"
+                        Padding="0" Width="30" Height="30" Margin="2"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Command="{Binding HelpPressedCommand}" CommandParameter="3"
+                        Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
+                
+                <!-- 
+                    #############################################################################
+                -->
+
+                <TextBlock Grid.Row="4" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Meilleurs Couleurs" HorizontalAlignment="Left" />
+                <ToggleSwitch Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+                              OnContent="Oui" OffContent="Non"
+                              IsChecked="{Binding Settings.BetterColors}"/>
+                
+                <Button Grid.Row="4" Grid.Column="3" Theme="{StaticResource OutlineButton}" Classes="Tertiary"
+                        Padding="0" Width="30" Height="30" Margin="2"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Command="{Binding HelpPressedCommand}" CommandParameter="4"
                         Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
             </avalonia:SpacedGrid>
             </ScrollViewer>

@@ -6,6 +6,7 @@
              xmlns:avalonia="clr-namespace:SpacedGridControl.Avalonia;assembly=SpacedGridControl.Avalonia"
              xmlns:controls="clr-namespace:EDTVelizy.Viewer.Controls"
              xmlns:markupExtensions="clr-namespace:FluentIcons.Avalonia.MarkupExtensions;assembly=FluentIcons.Avalonia"
+             xmlns:views="clr-namespace:EDTVelizy.Viewer.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EDTVelizy.Viewer.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -60,8 +61,15 @@
           </avalonia:SpacedGrid>
           
           <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
-              <controls:DailyScheduleControl x:Name="ScheduleControl" 
-                                             Items="{Binding Items}"/>
+              <Grid>
+                  <controls:ScheduleListControl x:Name="ListScheduleControl" 
+                                                IsVisible="{Binding !IsDailySchedule}"
+                                                Items="{Binding Items}"/>
+                  
+                  <controls:DailyScheduleControl x:Name="DailyScheduleControl" 
+                                                 IsVisible="{Binding IsDailySchedule}"
+                                                 Items="{Binding Items}" />
+              </Grid>
           </ScrollViewer>
           
           <DatePicker Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 

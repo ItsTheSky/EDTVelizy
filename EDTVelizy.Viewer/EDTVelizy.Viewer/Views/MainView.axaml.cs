@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Shapes;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using EDTVelizy.API;
 using EDTVelizy.Viewer.Utilities;
 using EDTVelizy.Viewer.ViewModels;
@@ -32,7 +33,8 @@ public partial class MainView : UserControl
         {
             CacheManager.LoadCache();
             Settings.LoadSettings();
-            
+
+            ViewModel.IsDailySchedule = Settings.ViewModel.Settings.DisplayMode;
             await ViewModel.GoToToday();
         });
         
@@ -54,6 +56,14 @@ public partial class MainView : UserControl
     public WindowNotificationManager? NotificationManager { get; private set; }
     public MainViewModel ViewModel => (MainViewModel) DataContext!;
     public TopLevel TopLevel => TopLevel.GetTopLevel(this)!;
+
+    public void UpdateVisual()
+    {
+        if (ViewModel.IsDailySchedule)
+            DailyScheduleControl.UpdateVisual();
+        else
+            ListScheduleControl.UpdateVisual();
+    }
 
     #region Drag System
 

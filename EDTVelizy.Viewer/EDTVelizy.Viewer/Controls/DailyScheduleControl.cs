@@ -14,18 +14,8 @@ using EDTVelizy.Viewer.ViewModels;
 
 namespace EDTVelizy.Viewer.Controls
 {
-    public class DailyScheduleControl : UserControl
+    public class DailyScheduleControl : UserControl, IScheduleControl
     {
-        public class ScheduleItem
-        {
-            public MainViewModel.InternalCourse Course { get; set; }
-            public TimeSpan StartTime { get; set; }
-            public TimeSpan EndTime { get; set; }
-            public Func<Control> CreateContent { get; set; }
-            public IBrush Color { get; set; }
-            public AsyncRelayCommand ClickCommand { get; set; }
-        }
-
         public static readonly StyledProperty<IEnumerable<ScheduleItem>> ItemsProperty =
             AvaloniaProperty.Register<DailyScheduleControl, IEnumerable<ScheduleItem>>(nameof(Items));
 
@@ -54,7 +44,7 @@ namespace EDTVelizy.Viewer.Controls
             InitializeComponent();
         }
 
-        public void UpdateScheduleItems()
+        public void UpdateVisual()
         {
             _scheduleCanvas.Children.Clear();
 
@@ -67,7 +57,7 @@ namespace EDTVelizy.Viewer.Controls
             // Draw hour lines if enabled
             if (ShowHourLines)
             {
-                for (int i = 0; i <= DisplayedHours; i++)
+                for (var i = 0; i <= DisplayedHours; i++)
                 {
                     var y = i * hourHeight;
                     var line = new Line
@@ -76,7 +66,7 @@ namespace EDTVelizy.Viewer.Controls
                         EndPoint = new Point(_scheduleCanvas.Bounds.Width, y),
                         Stroke = Brushes.Gray,
                         StrokeThickness = 1,
-                        StrokeDashArray = new AvaloniaList<double> { 2, 2 }
+                        StrokeDashArray = [2, 2]
                     };
                     _scheduleCanvas.Children.Add(line);
                 }
@@ -88,7 +78,6 @@ namespace EDTVelizy.Viewer.Controls
                 var endY = (item.EndTime.TotalHours - StartHour) * hourHeight;
                 var itemHeight = endY - startY;
 
-                // Assurez-vous que l'élément ne dépasse pas les limites du canvas
                 if (startY + itemHeight > canvasHeight)
                 {
                     itemHeight = canvasHeight - startY;
@@ -102,10 +91,11 @@ namespace EDTVelizy.Viewer.Controls
                 if (itemHeight <= 0) continue; // Ignore les éléments hors des limites
 
                 var content = item.CreateContent();
+                var color = item.Color.Invoke();
 
                 var button = new Border
                 {
-                    Background = item.Color,
+                    Background = color,
                     Child = content,
                     Width = _scheduleCanvas.Bounds.Width,
                     Height = itemHeight,
@@ -115,7 +105,7 @@ namespace EDTVelizy.Viewer.Controls
                     Theme = Application.Current!.FindResource("SolidButton") as ControlTheme,
                     Cursor = new Cursor(StandardCursorType.Hand),
                     
-                    BorderBrush = item.Color.Darken(0.8),
+                    BorderBrush = color.Darken(0.8),
                     BorderThickness = new Thickness(1.5)
                 };
                 button.Tapped += (sender, args) => item.ClickCommand.Execute(args);
@@ -141,8 +131,7 @@ namespace EDTVelizy.Viewer.Controls
                 {
                     Text = $"{hour:D2}h",
                     VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(5, i == 0 ? -3 : -8, 5, 5),
-                    Foreground = Brushes.Wheat
+                    Margin = new Thickness(5, i == 0 ? -3 : -8, 5, 5)
                 };
                 Grid.SetRow(timeLabel, i);
                 Grid.SetColumn(timeLabel, 0);
@@ -157,14 +146,14 @@ namespace EDTVelizy.Viewer.Controls
 
             Content = _mainGrid;
 
-            this.GetObservable(ItemsProperty).Subscribe(_ => UpdateScheduleItems());
-            this.GetObservable(ShowHourLinesProperty).Subscribe(_ => UpdateScheduleItems());
+            this.GetObservable(ItemsProperty).Subscribe(_ => UpdateVisual());
+            this.GetObservable(ShowHourLinesProperty).Subscribe(_ => UpdateVisual());
         }
 
         protected override void OnSizeChanged(SizeChangedEventArgs e)
         {
             base.OnSizeChanged(e);
-            UpdateScheduleItems();
+            UpdateVisual();
         }
     }
 }

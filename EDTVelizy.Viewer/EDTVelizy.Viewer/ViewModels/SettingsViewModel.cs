@@ -88,6 +88,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         NeedSaving = false;
         var hasGroupChanged = Settings.Group != SettingsBackup.Group;
+        var hasBetterColorsChanged = Settings.BetterColors != SettingsBackup.BetterColors;
         SettingsBackup = Settings.Clone();
 
         if (hasGroupChanged)
@@ -98,6 +99,13 @@ public partial class SettingsViewModel : ObservableObject
                 await MainView.Instance.ViewModel.GoToToday();
             });
         }
+
+        if (hasBetterColorsChanged)
+        {
+            MainView.Instance.UpdateVisual();
+        }
+
+        MainView.Instance.ViewModel.IsDailySchedule = Settings.DisplayMode;
 
         MainView.Instance.Settings.SaveSettings();
         MainView.Instance.ViewModel.SettingsOpened = false;
@@ -118,7 +126,7 @@ public partial class SettingsViewModel : ObservableObject
         var index = int.Parse(rawIndex);
         var help = index switch
         {
-            0 => "Groupe à utiliser pour récupérer les cours",
+            0 => "Groupe à utiliser pour récupérer les cours.",
             1 => """
                  Comment les cours récupérés sont mis en cache par l'application:
                  • Aucune: aucune mise en cache
@@ -127,6 +135,8 @@ public partial class SettingsViewModel : ObservableObject
                  (Les cours mis en cache sont accessibles hors-ligne)
                  """,
             2 => "Si l'heure actuelle est après 18h, le jour affiché par défaut sera le lendemain",
+            3 => "Affichage des cours: liste ou timeline.",
+            4 => "Utilisation de meilleurs couleurs (moins contrastés) pour les cours.",
             _ => ""
         };
         
@@ -169,6 +179,14 @@ public partial class SettingsViewModel : ObservableObject
         [ObservableProperty]
         [JsonPropertyName("better_today")]
         private bool _betterToday = true;
+        
+        [ObservableProperty]
+        [JsonPropertyName("display_mode")]
+        private bool _displayMode = false; // false: timeline, true: list
+        
+        [ObservableProperty]
+        [JsonPropertyName("better_colors")]
+        private bool _betterColors = true;
 
         #region Clone
         
@@ -178,7 +196,9 @@ public partial class SettingsViewModel : ObservableObject
             {
                 Group = Group,
                 CachePolicy = CachePolicy,
-                BetterToday = BetterToday
+                BetterToday = BetterToday,
+                DisplayMode = DisplayMode,
+                BetterColors = BetterColors
             };
         }
 

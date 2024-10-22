@@ -22,10 +22,11 @@ public partial class MainViewModel : ViewModelBase
 {
     #region Properties
 
-    [ObservableProperty] private ObservableCollection<DailyScheduleControl.ScheduleItem> _items = [];
+    [ObservableProperty] private ObservableCollection<ScheduleItem> _items = [];
     [ObservableProperty] private Dictionary<DateOnly, List<InternalCourse>> _loadedCoursesCache = new();
     [ObservableProperty] private bool _isLoading = false;
     [ObservableProperty] private bool _settingsOpened = false;
+    [ObservableProperty] private bool _isDailySchedule = false; 
     
     public ObservableCollection<DayOfTheWeek> DaysOfWeek { get; } =
     [
@@ -169,8 +170,10 @@ public partial class MainViewModel : ViewModelBase
                         if (found == null)
                             return;
                         
-                        found.Color = CourseTypeToColorConverter.GetColorForType(internalCourse.Description.EventType);
-                        MainView.Instance.ScheduleControl.UpdateScheduleItems();
+                        found.Color = () => Settings.BetterColors 
+                            ? CourseTypeToColorConverter.GetColorForType(internalCourse.Description.EventType) 
+                            : new SolidColorBrush(course.BackgroundColor.ToAvaloniaColor());
+                        MainView.Instance.UpdateVisual();
                     });
                     
                     var dateTime = DateOnly.FromDateTime(internalCourse.Course.Start.Date);
@@ -228,12 +231,14 @@ public partial class MainViewModel : ViewModelBase
         
         foreach (var internalCourse in courses)
         {
-            var scheduleItem = new DailyScheduleControl.ScheduleItem
+            var scheduleItem = new ScheduleItem
             {
                 Course = internalCourse,
                 StartTime = internalCourse.Course.Start.TimeOfDay,
                 EndTime = internalCourse.Course.End.TimeOfDay,
-                Color = CourseTypeToColorConverter.GetColorForType(internalCourse.Description.EventType),
+                Color = () => Settings.BetterColors 
+                    ? CourseTypeToColorConverter.GetColorForType(internalCourse.Description.EventType) 
+                    : new SolidColorBrush(internalCourse.Course.BackgroundColor.ToAvaloniaColor()),
                 CreateContent = () => new CourseCard(internalCourse),
                 ClickCommand = new AsyncRelayCommand(async () =>
                 {
@@ -242,8 +247,11 @@ public partial class MainViewModel : ViewModelBase
             };
             Items.Add(scheduleItem);
         }
-
-        MainView.Instance.ScheduleControl.UpdateScheduleItems();
+        
+        var sorted = Items.ToList();
+        sorted.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+        
+        MainView.Instance.UpdateVisual();
         // we also have to update DaysOfWeek to trigger the DayOfWeekToButtonClassConverter
         var temp = new ObservableCollection<DayOfTheWeek>(DaysOfWeek);
         DaysOfWeek.Clear();

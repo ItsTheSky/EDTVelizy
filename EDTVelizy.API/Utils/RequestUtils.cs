@@ -30,7 +30,7 @@ public static class RequestUtils
     /// <param name="endpoint">The endpoint to send the request to.</param>
     /// <param name="content">The content to send in the request body. The given object must be JSON-serializable</param>
     /// <returns>The response from the server.</returns>
-    public static async Task<HttpResponseMessage> PostAsync(string endpoint, object content, bool useDefaultHeaders = true)
+    public static async Task<HttpResponseMessage> PostAsync(string endpoint, object content, CancellationToken token = default, bool useDefaultHeaders = true)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, Constants.BaseUrl + endpoint);
 
@@ -53,10 +53,10 @@ public static class RequestUtils
         request.Content = new FormUrlEncodedContent(parameters);
         request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-        return await _client.SendAsync(request);
+        return await _client.SendAsync(request, token);
     }
 
-    public static async Task<HttpResponseMessage> GetAsync(string endpoint, object? parameters, bool useDefaultHeaders = true)
+    public static async Task<HttpResponseMessage> GetAsync(string endpoint, object? parameters, CancellationToken token = default, bool useDefaultHeaders = true)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, Constants.BaseUrl + endpoint);
         
@@ -82,7 +82,7 @@ public static class RequestUtils
         }
         request.RequestUri = new Uri(request.RequestUri + "?" + query.ToString().TrimEnd('&'));
 
-        return await _client.SendAsync(request);
+        return await _client.SendAsync(request, token);
     }
     
 }

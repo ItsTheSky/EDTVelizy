@@ -14,17 +14,17 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                    TextAlignment="Center" HorizontalAlignment="Stretch"
                    FontWeight="SemiBold"
-                   Text="{Binding Course.Description.Subject, Converter={StaticResource StringLimiterConverter}, ConverterParameter=40}" />
+                   Text="{Binding Course.Description.DisplayedSubjects, Converter={StaticResource StringLimiterConverter}, ConverterParameter=40}" />
         
         
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Salle" FontWeight="SemiBold" />
-        <TextBlock Foreground="Wheat" Grid.Row="1" Grid.Column="1" Text="{Binding Course.Description.Room}" TextAlignment="Right" />
+        <TextBlock Foreground="Wheat" Grid.Row="1" Grid.Column="1" Text="{Binding Course.Description.DisplayedRooms}" TextAlignment="Right" />
         
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Professeur" FontWeight="SemiBold" />
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Course.Description.Professor}" TextAlignment="Right" />
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Course.Description.DisplayedProfessors}" TextAlignment="Right" />
         
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Groupe" FontWeight="SemiBold" />
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Course.Description.Group}" TextAlignment="Right" />
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Course.Description.DisplayedGroups}" TextAlignment="Right" />
         
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Horaires" FontWeight="SemiBold" />
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Spacing="2" HorizontalAlignment="Right">

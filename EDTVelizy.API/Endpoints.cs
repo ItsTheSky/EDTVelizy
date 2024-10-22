@@ -10,47 +10,56 @@ namespace EDTVelizy.API;
 public static class Endpoints
 {
 
-    public static async Task<List<Course>> GetCourses(CalendarRequest request)
+    public static async Task<List<Course>> GetCourses(CalendarRequest request, CancellationToken token = default)
     {
-        var response = await RequestUtils.PostAsync("GetCalendarData", request);
+        var response = await RequestUtils.PostAsync("GetCalendarData", request, token);
         var content = await response.Content.ReadAsStringAsync();
         return JsonUtils.Deserialize<List<Course>>(content);
     }
 
-    public static async Task<CourseDescription> GetDescription(this Course course)
+    public static async Task<CourseDescription> GetDescription(this Course course, CancellationToken token = default)
     {
         var obj = new { eventId = course.Id };
-        var response = await RequestUtils.PostAsync("GetSideBarEvent", obj);
-        var content = await response.Content.ReadAsStringAsync();
+        var response = await RequestUtils.PostAsync("GetSideBarEvent", obj, token);
+        var content = await response.Content.ReadAsStringAsync(token);
         var elementsJson = JsonDocument.Parse(content).RootElement.GetProperty("elements");
         var description = new CourseDescription();
-        
+
+        string? lastElementType = null;
         foreach (var element in elementsJson.EnumerateArray())
         {
             var key = element.GetProperty("label").GetString();
-            var value = element.GetProperty("content").GetString();
+            if (key == null && lastElementType != null)
+                key = lastElementType;
+            else
+                lastElementType = key;
+            
+            var value = element.GetProperty("content").ValueKind == JsonValueKind.Array 
+                ? string.Join(", ", element.GetProperty("content").EnumerateArray().Select(e => e.GetString())) 
+                : element.GetProperty("content").GetString();
             switch (key)
             {
                 case "Personnel":
-                    description.Professor = value;
+                    description.Professors.Add(value);
                     break;
                 case "Salle":
-                    description.Room = value;
+                    description.Rooms.Add(value);
                     break;
                 case "Matière":
-                    description.Subject = value;
+                case "Matières":
+                    description.Subjects.Add(value);
                     break;
                 case "Groupe":
-                    description.Group = value;
+                    description.Groups.Add(value);
                     break;
                 case "Catégorie d’événement":
-                    description.EventType = value;
+                    description.EventTypes.Add(value);
                     break;
                 case "Remarques":
-                    description.Note = value;
+                    description.Notes.Add(value);
                     break;
                 case "Heure":
-                    description.Hour = value;
+                    description.Hours.Add(value);
                     break;
             }
         }
@@ -58,10 +67,10 @@ public static class Endpoints
         return description;
     }
     
-    public static async Task<List<string>> GetGroups(FederationRequest request)
+    public static async Task<List<string>> GetGroups(FederationRequest request, CancellationToken token = default)
     {
-        var response = await RequestUtils.PostAsync("ReadResourceListItems", request);
-        var content = await response.Content.ReadAsStringAsync();
+        var response = await RequestUtils.PostAsync("ReadResourceListItems", request, token);
+        var content = await response.Content.ReadAsStringAsync(token);
         Console.WriteLine(content);
         var json = JsonDocument.Parse(content);
         var results = json.RootElement.GetProperty("results");

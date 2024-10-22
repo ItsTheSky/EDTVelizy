@@ -10,6 +10,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.Input;
+using EDTVelizy.Viewer.ViewModels;
 
 namespace EDTVelizy.Viewer.Controls
 {
@@ -17,6 +18,7 @@ namespace EDTVelizy.Viewer.Controls
     {
         public class ScheduleItem
         {
+            public MainViewModel.InternalCourse Course { get; set; }
             public TimeSpan StartTime { get; set; }
             public TimeSpan EndTime { get; set; }
             public Func<Control> CreateContent { get; set; }

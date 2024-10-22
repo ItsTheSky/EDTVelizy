@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -162,7 +163,14 @@ public partial class MainViewModel : ViewModelBase
                     };
                     _ = Dispatcher.UIThread.InvokeAsync(async () =>
                     {
-                        internalCourse.Description = await course.GetDescription(tokenSource.Token);
+                        internalCourse.Description = await internalCourse.Course.GetDescription(token: tokenSource.Token);
+                
+                        var found = Items.ToList().Find(value => value.Course == internalCourse);
+                        if (found == null)
+                            return;
+                        
+                        found.Color = CourseTypeToColorConverter.GetColorForType(internalCourse.Description.EventType);
+                        MainView.Instance.ScheduleControl.UpdateScheduleItems();
                     });
                     
                     var dateTime = DateOnly.FromDateTime(internalCourse.Course.Start.Date);
@@ -220,8 +228,9 @@ public partial class MainViewModel : ViewModelBase
         
         foreach (var internalCourse in courses)
         {
-            Items.Add(new DailyScheduleControl.ScheduleItem
+            var scheduleItem = new DailyScheduleControl.ScheduleItem
             {
+                Course = internalCourse,
                 StartTime = internalCourse.Course.Start.TimeOfDay,
                 EndTime = internalCourse.Course.End.TimeOfDay,
                 Color = CourseTypeToColorConverter.GetColorForType(internalCourse.Description.EventType),
@@ -230,7 +239,8 @@ public partial class MainViewModel : ViewModelBase
                 {
                     ShowingCourse = internalCourse;
                 })
-            });
+            };
+            Items.Add(scheduleItem);
         }
 
         MainView.Instance.ScheduleControl.UpdateScheduleItems();

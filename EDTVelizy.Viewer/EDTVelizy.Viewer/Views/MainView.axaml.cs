@@ -35,6 +35,8 @@ public partial class MainView : UserControl
             
             await ViewModel.GoToToday();
         });
+        
+        RegisterEvents();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -52,4 +54,30 @@ public partial class MainView : UserControl
     public WindowNotificationManager? NotificationManager { get; private set; }
     public MainViewModel ViewModel => (MainViewModel) DataContext!;
     public TopLevel TopLevel => TopLevel.GetTopLevel(this)!;
+
+    #region Drag System
+
+    private Point? _dragStartPoint = null;
+    private void RegisterEvents()
+    {
+        PointerPressed += (sender, e) => _dragStartPoint = e.GetPosition(null);
+        PointerReleased += (sender, e) =>
+        {
+            if (_dragStartPoint == null) 
+                return;
+            
+            var diff = e.GetPosition(null) - _dragStartPoint.Value;
+            _dragStartPoint = null;
+            
+            if (Math.Abs(diff.X) < 20 && Math.Abs(diff.Y) < 20)
+                return;
+            
+            if (diff.X > 0)
+                Dispatcher.UIThread.InvokeAsync(ViewModel.PreviousDay);
+            else 
+                Dispatcher.UIThread.InvokeAsync(ViewModel.NextDay);
+        };
+    }
+
+    #endregion
 }

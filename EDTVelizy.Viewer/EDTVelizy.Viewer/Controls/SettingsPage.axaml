@@ -9,11 +9,12 @@
              x:DataType="viewModels:SettingsViewModel"
              x:Class="EDTVelizy.Viewer.Controls.SettingsPage">
     <Grid RowDefinitions="*,Auto">
-        <StackPanel Orientation="Vertical" Spacing="10" Margin="5" Grid.Row="0">
-            <TextBlock Text="Paramètres" FontWeight="Bold" FontSize="24" TextAlignment="Center" />
+        <Grid RowDefinitions="Auto,*" Margin="5" Grid.Row="0">
+            <TextBlock Grid.Row="0" Text="Paramètres" FontWeight="Bold" FontSize="24" TextAlignment="Center" />
         
-            <avalonia:SpacedGrid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="2"
-                                 RowDefinitions="Auto,Auto" RowSpacing="5">
+            <ScrollViewer Grid.Row="1">
+                <avalonia:SpacedGrid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="2"
+                                 RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Groupe" HorizontalAlignment="Left" />
                 
                 <AutoCompleteBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"
@@ -27,6 +28,10 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Command="{Binding HelpPressedCommand}" CommandParameter="0"
                         Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
+                
+                <!-- 
+                    #############################################################################
+                -->
 
                 <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Mise en Cache" HorizontalAlignment="Left" />
                 <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"
@@ -51,9 +56,24 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                         Command="{Binding HelpPressedCommand}" CommandParameter="1"
                         Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
+                
+                <!-- 
+                    #############################################################################
+                -->
+
+                <TextBlock Grid.Row="2" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Meilleur Jour Actuel" HorizontalAlignment="Left" />
+                <ToggleSwitch Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                              OnContent="Oui" OffContent="Non"
+                              IsChecked="{Binding Settings.BetterToday}"/>
+                
+                <Button Grid.Row="2" Grid.Column="3" Theme="{StaticResource OutlineButton}" Classes="Tertiary"
+                        Padding="0" Width="30" Height="30" Margin="2"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Command="{Binding HelpPressedCommand}" CommandParameter="2"
+                        Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
             </avalonia:SpacedGrid>
-        
-        </StackPanel>
+            </ScrollViewer>
+        </Grid>
         <avalonia:SpacedGrid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="5">
             
             <Button Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

@@ -88,6 +88,8 @@ public partial class MainViewModel : ViewModelBase
     public async Task GoToToday()
     {
         SelectedDate = DateOnly.FromDateTime(DateTime.Now);
+        if (Settings.BetterToday && DateTime.Now.Hour >= 18)
+            SelectedDate = SelectedDate.AddDays(1);
         await MoveToDay();
     }
 

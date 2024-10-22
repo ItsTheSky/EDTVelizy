@@ -126,6 +126,7 @@ public partial class SettingsViewModel : ObservableObject
                  • Tout: tous les cours sont mis en cache
                  (Les cours mis en cache sont accessibles hors-ligne)
                  """,
+            2 => "Si l'heure actuelle est après 18h, le jour affiché par défaut sera le lendemain",
             _ => ""
         };
         
@@ -164,6 +165,10 @@ public partial class SettingsViewModel : ObservableObject
         [ObservableProperty]
         [JsonPropertyName("cache_policy")]
         private CachePolicy _cachePolicy = CachePolicy.Week;
+        
+        [ObservableProperty]
+        [JsonPropertyName("better_today")]
+        private bool _betterToday = true;
 
         #region Clone
         
@@ -172,7 +177,8 @@ public partial class SettingsViewModel : ObservableObject
             return new SettingsModel
             {
                 Group = Group,
-                CachePolicy = CachePolicy
+                CachePolicy = CachePolicy,
+                BetterToday = BetterToday
             };
         }
 

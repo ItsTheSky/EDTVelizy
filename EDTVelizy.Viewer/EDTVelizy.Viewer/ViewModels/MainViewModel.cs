@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
@@ -123,7 +124,6 @@ public partial class MainViewModel : ViewModelBase
         else
         {
             IsLoading = true;
-            // now we'll always retrieve for the whole week of the specified date
             var dayIndex = ActualDayOfTheWeek(SelectedDate.DayOfWeek);
             var startOfWeek = SelectedDate.AddDays(- dayIndex);
             var endOfWeek = startOfWeek.AddDays(6);
@@ -137,50 +137,79 @@ public partial class MainViewModel : ViewModelBase
             };
 
             courses = [];
-            var loadedCourses = await Endpoints.GetCourses(req);
-            if (loadedCourses.Count == 0)
-            {
-                NotificationManager.Show(
-                    new Notification("Faute de frappe?", 
-                        "Aucun cours n'a été trouvé pour cette semaine. Vérifiez que le groupe est correctement configuré."),
-                    type: NotificationType.Warning,
-                    classes: ["Light"]);
-            }
-            
-            var sortedCourses = new Dictionary<DateOnly, List<InternalCourse>>();
-            foreach (var course in loadedCourses)
-            {
-                var internalCourse = new InternalCourse
+            var tokenSource = new CancellationTokenSource(new TimeSpan(0, 0, 5));
+            try
+            { 
+                var loadedCourses = await Endpoints.GetCourses(req, tokenSource.Token);
+                if (loadedCourses.Count == 0)
                 {
-                    Course = course,
-                    Description = await course.GetDescription()
-                };
-                
-                var dateTime = DateOnly.FromDateTime(internalCourse.Course.Start.Date);
-                if (!sortedCourses.ContainsKey(dateTime))
-                    sortedCourses[dateTime] = [];
-                sortedCourses[dateTime].Add(internalCourse);
-                if (dateTime == SelectedDate)
-                    courses.Add(internalCourse);
-            }
-
-            var processedDays = new List<DateOnly>();
-            foreach (var (date, courseList) in sortedCourses)
-            {
-                LoadedCoursesCache[date] = courseList;
-                processedDays.Add(date);
-            }
-            
-            foreach (var day in DaysOfWeek)
-            {
-                if (!processedDays.Contains(SelectedDate.AddDays(ActualDayOfTheWeek(day.Day) - ActualDayOfTheWeek(SelectedDate.DayOfWeek)))
-                    && day.Day != SelectedDate.DayOfWeek)
-                {
-                    LoadedCoursesCache[SelectedDate.AddDays(ActualDayOfTheWeek(day.Day) - ActualDayOfTheWeek(SelectedDate.DayOfWeek))] = [];
+                    NotificationManager.Show(
+                        new Notification("Faute de frappe?", 
+                            "Aucun cours n'a été trouvé pour cette semaine. Vérifiez que le groupe est correctement configuré."),
+                        type: NotificationType.Warning,
+                        classes: ["Light"]);
                 }
+                
+                var sortedCourses = new Dictionary<DateOnly, List<InternalCourse>>();
+                foreach (var course in loadedCourses)
+                {
+                    var internalCourse = new InternalCourse
+                    {
+                        Course = course,
+                        Description = await course.GetDescription(tokenSource.Token)
+                    };
+                    
+                    var dateTime = DateOnly.FromDateTime(internalCourse.Course.Start.Date);
+                    if (!sortedCourses.ContainsKey(dateTime))
+                        sortedCourses[dateTime] = [];
+                    sortedCourses[dateTime].Add(internalCourse);
+                    if (dateTime == SelectedDate)
+                        courses.Add(internalCourse);
+                }
+
+                var processedDays = new List<DateOnly>();
+                foreach (var (date, courseList) in sortedCourses)
+                {
+                    LoadedCoursesCache[date] = courseList;
+                    processedDays.Add(date);
+                }
+                
+                Console.WriteLine("Processed " + processedDays.Count + " days");
+                foreach (var day in DaysOfWeek)
+                {
+                    if (!processedDays.Contains(SelectedDate.AddDays(ActualDayOfTheWeek(day.Day) - ActualDayOfTheWeek(SelectedDate.DayOfWeek)))
+                        && day.Day != SelectedDate.DayOfWeek)
+                    {
+                        LoadedCoursesCache[SelectedDate.AddDays(ActualDayOfTheWeek(day.Day) - ActualDayOfTheWeek(SelectedDate.DayOfWeek))] = [];
+                    }
+                }
+                
+                MainView.CacheManager.UpdateCache();
             }
-            
-            IsLoading = false;
+            catch (Exception e)
+            {
+                if (e is TaskCanceledException)
+                {
+                    NotificationManager.Show(
+                        new Notification("Requête annulée", 
+                            "La requête a pris trop de temps à répondre. Veuillez réessayer."),
+                        type: NotificationType.Error,
+                        classes: ["Light"]);
+                }
+                else
+                {
+                    NotificationManager.Show(
+                        new Notification("Erreur", 
+                            "Une erreur est survenue lors de la récupération des cours. Veuillez réessayer."),
+                        type: NotificationType.Error,
+                        classes: ["Light"]);
+                }
+                
+                Console.WriteLine(e);
+            } finally
+            {
+                IsLoading = false;
+            }
         }
         
         foreach (var internalCourse in courses)
@@ -221,7 +250,7 @@ public partial class MainViewModel : ViewModelBase
 
     #endregion
 
-    private static int ActualDayOfTheWeek(DayOfWeek dayOfWeek)
+    public static int ActualDayOfTheWeek(DayOfWeek dayOfWeek)
     {
         return dayOfWeek switch {
             DayOfWeek.Monday => 0,

@@ -158,8 +158,12 @@ public partial class MainViewModel : ViewModelBase
                     var internalCourse = new InternalCourse
                     {
                         Course = course,
-                        Description = await course.GetDescription(tokenSource.Token)
+                        Description = new CourseDescription()
                     };
+                    _ = Dispatcher.UIThread.InvokeAsync(async () =>
+                    {
+                        internalCourse.Description = await course.GetDescription(tokenSource.Token);
+                    });
                     
                     var dateTime = DateOnly.FromDateTime(internalCourse.Course.Start.Date);
                     if (!sortedCourses.ContainsKey(dateTime))

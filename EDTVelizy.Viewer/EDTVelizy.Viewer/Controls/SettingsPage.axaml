@@ -12,10 +12,46 @@
         <StackPanel Orientation="Vertical" Spacing="10" Margin="5" Grid.Row="0">
             <TextBlock Text="Paramètres" FontWeight="Bold" FontSize="24" TextAlignment="Center" />
         
-            <Grid ColumnDefinitions="*,Auto,Auto">
-                <TextBlock VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Groupe" />
-                <TextBox Grid.Column="1" Text="{Binding Settings.Group}" MinWidth="100" />
-            </Grid>
+            <avalonia:SpacedGrid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="2"
+                                 RowDefinitions="Auto,Auto" RowSpacing="5">
+                <TextBlock Grid.Row="0" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Groupe" HorizontalAlignment="Left" />
+                
+                <AutoCompleteBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"
+                                 Watermark="Rechercher un groupe"
+                                 ItemsSource="{Binding FoundGroups}"
+                                 Text="{Binding GroupRequest}"
+                                 SelectedItem="{Binding Settings.Group}"/>
+                
+                <Button Grid.Row="0" Grid.Column="3" Theme="{StaticResource OutlineButton}" Classes="Tertiary"
+                        Padding="0" Width="30" Height="30" Margin="2"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Command="{Binding HelpPressedCommand}" CommandParameter="0"
+                        Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
+
+                <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="0" FontWeight="SemiBold" Text="Mise en Cache" HorizontalAlignment="Left" />
+                <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding Caches}"
+                          SelectedItem="{Binding SelectedCache}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                
+                <Button Grid.Row="1" Grid.Column="2" Theme="{StaticResource OutlineButton}" Classes="Danger"
+                        Padding="0" Width="30" Height="30" Margin="2"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Command="{Binding ClearCacheCommand}" CommandParameter="1"
+                        Content="{markupExtensions:SymbolIcon Symbol=Delete}"/>
+                
+                <Button Grid.Row="1" Grid.Column="3" Theme="{StaticResource OutlineButton}" Classes="Tertiary"
+                        Padding="0" Width="30" Height="30" Margin="2"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Command="{Binding HelpPressedCommand}" CommandParameter="1"
+                        Content="{markupExtensions:SymbolIcon Symbol=QuestionCircle}"/>
+            </avalonia:SpacedGrid>
         
         </StackPanel>
         <avalonia:SpacedGrid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="5">

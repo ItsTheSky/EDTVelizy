@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Avalonia.Controls;
+using Avalonia.Threading;
+using EDTVelizy.API;
 using EDTVelizy.Viewer.ViewModels;
 using Path = System.IO.Path;
 
@@ -39,6 +42,9 @@ public partial class SettingsPage : UserControl
             ViewModel.Settings = new SettingsViewModel.SettingsModel();
             ViewModel.SettingsBackup = new SettingsViewModel.SettingsModel();
         }
+        
+        ViewModel.NeedSaving = false;
+        ViewModel.SelectedCache = SettingsViewModel.Caches.First(c => c.Policy == ViewModel.Settings.CachePolicy);
         
         _loaded = true;
     }

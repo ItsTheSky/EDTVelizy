@@ -1,12 +1,12 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.Media;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
-using EDTVelizy.Viewer.ViewModels;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Styling;
 using EDTVelizy.Viewer.Views;
 
 namespace EDTVelizy.Viewer.Controls
@@ -29,7 +29,7 @@ namespace EDTVelizy.Viewer.Controls
         {
             _mainStack = new StackPanel
             {
-                Spacing = 2,
+                Spacing = 5,
                 Margin = new Thickness(10)
             };
 
@@ -76,28 +76,33 @@ namespace EDTVelizy.Viewer.Controls
                 };
 
                 // Colonne de temps
-                var timeStack = new StackPanel
+                var timeStack = new Grid
                 {
-                    Width = 70,
-                    Orientation = Orientation.Vertical,
+                    Width = 50,
                     HorizontalAlignment = HorizontalAlignment.Right,
-                    VerticalAlignment = VerticalAlignment.Center
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    RowDefinitions = new RowDefinitions("*,*")
                 };
 
                 var startTimeBlock = new TextBlock
                 {
                     Text = $"{item.StartTime:hh\\:mm}",
-                    FontSize = 16
+                    FontSize = 16,
+                    VerticalAlignment = VerticalAlignment.Top
                 };
 
                 var endTimeBlock = new TextBlock
                 {
                     Text = $"{item.EndTime:hh\\:mm}",
-                    FontSize = 16
+                    FontSize = 16,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    FontWeight = FontWeight.DemiBold
                 };
 
                 timeStack.Children.Add(startTimeBlock);
                 timeStack.Children.Add(endTimeBlock);
+                Grid.SetRow(startTimeBlock, 0);
+                Grid.SetRow(endTimeBlock, 1);
 
                 // Barre verticale colorée
                 var colorBar = new Border
@@ -109,9 +114,21 @@ namespace EDTVelizy.Viewer.Controls
                 };
 
                 // Contenu du cours
+                var baseColor = Application.Current?.FindResource("SemiGrey8Color") is Color
+                    ? (Color) Application.Current?.FindResource("SemiGrey8Color")!
+                    : Colors.Gray;
+                var currentColor = Application.Current?.FindResource("SemiIndigo8Color") is Color
+                    ? (Color) Application.Current?.FindResource("SemiIndigo8Color")!
+                    : Colors.Crimson;
+
+                var isCurrentHour = item.StartTime <= DateTime.Now.TimeOfDay && item.EndTime >= DateTime.Now.TimeOfDay;
+                // be sur eit's the same day too
+                if (DateTime.Now.DayOfYear != item.Course.Course.Start.DayOfYear)
+                    isCurrentHour = false;
+                
                 var contentBorder = new Border
                 {
-                    Background = new SolidColorBrush(Color.FromArgb(20, 255, 255, 255)),
+                    Background = new SolidColorBrush(isCurrentHour ? currentColor : baseColor),
                     Padding = new Thickness(10),
                     CornerRadius = new CornerRadius(4)
                 };
@@ -141,7 +158,8 @@ namespace EDTVelizy.Viewer.Controls
                 var professorBlock = new TextBlock
                 {
                     Text = item.Course.Description.DisplayedProfessors,
-                    FontSize = 14
+                    FontSize = 14,
+                    TextTrimming = TextTrimming.CharacterEllipsis
                 };
 
                 var separatorBlock = new TextBlock
@@ -151,15 +169,18 @@ namespace EDTVelizy.Viewer.Controls
                     Margin = new Thickness(5, 0)
                 };
 
-                var roomBlock = new TextBlock
+                //<Label Classes="Purple" Theme="{StaticResource TagLabel}">Purple</Label>
+                var roomBlock = new Label
                 {
-                    Text = item.Course.Description.DisplayedRooms,
-                    FontSize = 14
+                    Content = item.Course.Description.DisplayedRooms,
+                    FontSize = 14,
+                    Classes = { "Orange" },
+                    Theme = Application.Current!.FindResource("TagLabel") as ControlTheme,
                 };
 
-                profRoomStack.Children.Add(professorBlock);
-                profRoomStack.Children.Add(separatorBlock);
                 profRoomStack.Children.Add(roomBlock);
+                profRoomStack.Children.Add(separatorBlock);
+                profRoomStack.Children.Add(professorBlock);
 
                 // Groupe
                 var groupBlock = new TextBlock
